@@ -1,0 +1,48 @@
+---
+- hosts: rpi
+  gather_facts: yes
+  vars:
+    packages_to_install: [ git, vim, htop ]
+    username: serial
+  tasks:
+    - name: install apt packages
+      apt:
+        update_cache: yes
+        pkg: "{{ packages_to_install }}"
+      become: yes
+
+    - name: pull the ros-playground ROS workspace
+      git:
+        repo: 'https://github.com/cyrillg/ros-playground.git'
+        dest: /home/{{ username }}/ros-ws
+
+    - name: pull the ros-arm docker image source
+      git:
+        repo: 'https://github.com/cyrillg/ros-arm.git'
+        dest: /home/{{ username }}/ros-arm
+
+    - name: Copy config files to the board
+      copy:
+        src: "{{ item }}"
+        dest: /home/{{ username }}
+      with_items:
+        ['files/.vimrc',
+         'files/.bashrc',
+         'files/.tmux.conf',
+         'files/.gitconfig']
+
+    - name: build the ros-arm image from source
+      docker_image:
+         path: /home/{{ username }}/ros-arm
+         name: cyrillg/ros-arm
+         buildargs:
+           user: "{{ username }}"
+
+    - name: create and start the sr-container
+      docker_container:
+        name: sr-container
+        image: cyrillg/ros-arm
+        state: started
+        devices:
+        - "/dev/ttyACM0:/dev/ttyACM0"
+

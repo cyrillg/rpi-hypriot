@@ -17,7 +17,7 @@ users:
     gecos: "Serial Robotics"
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
-    groups: users,docker,video
+    groups: users,docker,video,sudo
     plain_text_passwd: serial
     lock_passwd: false
     ssh_pwauth: true
@@ -30,11 +30,6 @@ timezone: "Asia/Singapore"
 # # Update apt packages on first boot
 package_update: true
 package_upgrade: false
-
-# Install any additional apt packages you need here
-packages:
- - vim
- - tmux
 
 # # WiFi connect to HotSpot
 # To make wifi work with RPi3 and RPi0
