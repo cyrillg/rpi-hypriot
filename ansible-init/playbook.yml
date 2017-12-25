@@ -43,6 +43,8 @@
         name: sr-container
         image: cyrillg/ros-arm
         state: started
+        volumes:
+        - "/home/{{ username }}/ros-ws:/home/serial/ros_ws"
         devices:
         - "/dev/ttyACM0:/dev/ttyACM0"
 
