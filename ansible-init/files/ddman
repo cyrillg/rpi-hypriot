@@ -1,0 +1,41 @@
+#! /usr/bin/env bash
+
+if [[ "$#" == "0" ]];then
+    echo "Usage: ddman create|start|stop|connect"
+    exit 0
+fi
+
+case "$1" in
+        create)
+            docker create --volume="/home/serial/ros-ws":"/home/serial/ros-ws" \
+                       --device="/dev/ttyACM0:/dev/ttyACM0" \
+                       --name="sr-container" \
+                       cyrillg/ros-arm
+            exit 0
+            ;;
+
+        start)
+            docker start sr-container
+            exit 0
+            ;;
+
+        stop)
+            docker stop sr-container
+            exit 0
+            ;;
+
+        connect)
+            docker exec -it \
+                        --user=serial \
+                        sr-container \
+                        /bin/bash
+            exit 0
+            ;;
+
+        *)
+            echo $"Usage: $0 {create|start|stop|connect}"
+            exit 1
+
+esac
+
+

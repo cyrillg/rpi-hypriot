@@ -31,6 +31,14 @@
          'files/.tmux.conf',
          'files/.gitconfig']
 
+    - name: Copy scripts to the board
+      copy:
+        src: "{{ item }}"
+        dest: /home/{{ username }}
+        mode: 0755
+      with_items:
+        ['files/ddman']
+
     - name: build the ros-arm image from source
       docker_image:
          path: /home/{{ username }}/ros-arm
